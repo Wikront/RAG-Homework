@@ -1,0 +1,51 @@
+services:
+
+  # ── RAG application (FastAPI server) ─────────────────────────────────────────
+  rag-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    volumes:
+      # Mount local data so PDFs / audio can be added without rebuilding the image.
+      - ./data:/app/data
+      # Cache HuggingFace model downloads across container restarts.
+      - hf_cache:/root/.cache/huggingface
+    ports:
+      - "8080:8080"
+    depends_on:
+      - chroma   # entrypoint.sh polls /api/v2/heartbeat until Chroma is ready
+    # Needed on Linux to resolve host.docker.internal (already works on macOS/Windows).
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # ── ChromaDB vector store ────────────────────────────────────────────────────
+  chroma:
+    image: chromadb/chroma:1.5.2
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ANONYMIZED_TELEMETRY=FALSE
+    volumes:
+      - chroma_data:/data
+    ports:
+      # Expose so you can inspect the collection from the host (optional).
+      - "8000:8000"
+
+  # ── Open WebUI ───────────────────────────────────────────────────────────────
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    environment:
+      - OPENAI_API_BASE_URLS=http://rag-app:8080/v1
+      - OPENAI_API_KEY=rag
+      - WEBUI_AUTH=False
+    ports:
+      - "3000:8080"
+    volumes:
+      - open-webui:/app/backend/data
+    depends_on:
+      - rag-app
+
+volumes:
+  chroma_data:
+  hf_cache:
+  open-webui:
