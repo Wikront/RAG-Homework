@@ -1,0 +1,23 @@
+========================================================================
+RAG smoke-test  —  2026-03-05 17:04:00
+Endpoint: http://localhost:8080
+========================================================================
+
+── Q1 ──────────────────────────────────────────────────────────
+Q: What are the production 'Do's' for RAG?
+
+A: The context provided does not contain specific information about "production 'Do's' for RAG." The passages discuss various aspects of RAG such as its benefits, limitations, and potential evolutions but do not outline production guidelines or best practices specifically labeled as "Do's." Therefore, I cannot provide an answer based solely on the given context.
+
+── Q2 ──────────────────────────────────────────────────────────
+Q: What is the difference between standard retrieval and the ColPali approach?
+
+A: The main difference between standard retrieval and the ColPali approach lies in how they handle document processing, particularly for complex documents like PDFs. Standard retrieval often relies on Optical Character Recognition (OCR), which can lead to errors with complex layouts, misses table structures, and requires expensive specialized models for figure captioning. Additionally, it may lose visual context during chunking and only embed text, thus not preserving all the information present in the document.
+
+In contrast, the ColPali approach treats pages as images without using OCR, utilizing a model like PaliGemma-3B Vision Language Model to generate 1,024 patch embeddings per page. This method ensures that the context and visual information are preserved more accurately, leading to better retrieval quality [5].
+
+── Q3 ──────────────────────────────────────────────────────────
+Q: Why is hybrid search better than vector-only search?
+
+A: Hybrid search is better than vector-only search because it reduces the baseline failure rate significantly, providing more accurate and contextually relevant results. Specifically, a study shows that using a hybrid approach with a reranker reduces the retrieval failure rate from 5.7% to 1.9%, which represents a 67% reduction in failures compared to vector-only searches [1]. This improvement is attributed to the ability of hybrid systems to handle complex queries more effectively by leveraging both semantic understanding and exact match capabilities, thus connecting relevant pieces of information that might be missed by vector-only methods alone.
+
+========================================================================
